@@ -2,11 +2,12 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>ERP Base</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.png">
+    <title>{{ env("APP_NAME") }}</title>
     @viteReactRefresh
-    @vite(['resources/js/app.jsx'])
+    @vite(['resources/ts/main.tsx'])
 </head>
-<body>
+<body class="dark:bg-gray-900">
     <div id="app"></div>
 </body>
 </html>
