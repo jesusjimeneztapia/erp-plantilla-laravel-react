@@ -11,12 +11,10 @@ import {
     ListIcon,
     PageIcon,
     PieChartIcon,
-    PlugInIcon,
     TableIcon,
     UserCircleIcon,
 } from "@icons/index";
 import { useSidebar } from "../context/SidebarContext";
-import SidebarWidget from "./SidebarWidget";
 
 type NavItem = {
     name: string;
@@ -58,7 +56,7 @@ const navItems: NavItem[] = [
         icon: <PageIcon />,
         subItems: [
             { name: "Blank Page", path: "/blank", pro: false },
-            { name: "404 Error", path: "/error-404", pro: false },
+            { name: "404 Error", path: "/404", pro: false },
         ],
     },
 ];
@@ -82,14 +80,6 @@ const othersItems: NavItem[] = [
             { name: "Buttons", path: "/buttons", pro: false },
             { name: "Images", path: "/images", pro: false },
             { name: "Videos", path: "/videos", pro: false },
-        ],
-    },
-    {
-        icon: <PlugInIcon />,
-        name: "Authentication",
-        subItems: [
-            { name: "Sign In", path: "/signin", pro: false },
-            { name: "Sign Up", path: "/signup", pro: false },
         ],
     },
 ];
@@ -362,7 +352,7 @@ const AppSidebar: FC = () => {
                     <div className="flex flex-col gap-4">
                         <div>
                             <h2
-                                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
                                     !isExpanded && !isHovered
                                         ? "lg:justify-center"
                                         : "justify-start"
@@ -378,7 +368,7 @@ const AppSidebar: FC = () => {
                         </div>
                         <div className="">
                             <h2
-                                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
                                     !isExpanded && !isHovered
                                         ? "lg:justify-center"
                                         : "justify-start"
@@ -394,9 +384,6 @@ const AppSidebar: FC = () => {
                         </div>
                     </div>
                 </nav>
-                {isExpanded || isHovered || isMobileOpen ? (
-                    <SidebarWidget />
-                ) : null}
             </div>
         </aside>
     );
