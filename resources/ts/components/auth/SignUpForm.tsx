@@ -4,10 +4,91 @@ import { EyeCloseIcon, EyeIcon } from "@icons/index";
 import Label from "@components/form/Label";
 import Input from "@components/form/input/InputField";
 import Checkbox from "@components/form/input/Checkbox";
+import z from "zod";
+import { isAuth, useAuth } from "@context/AuthContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Button from "@components/ui/button/Button";
+import toast, { ErrorIcon } from "react-hot-toast";
+
+const schema = z.object({
+    name: z.string().min(3, {
+        error: (iss) =>
+            !iss.input
+                ? "El nombre completo es requerido"
+                : "El nombre completo debe tener al menos 3 caracteres",
+    }),
+    email: z.email({
+        error: (iss) =>
+            !iss.input
+                ? "El correo electrónico es requerido"
+                : "El correo electrónico es inválido",
+    }),
+    password: z.string().min(8, {
+        error: (iss) =>
+            !iss.input
+                ? "La contraseña es requerida"
+                : "La contraseña debe tener al menos 8 caracteres",
+    }),
+});
 
 export default function SignUpForm() {
+    const { authenticate } = useAuth();
+    const {
+        register,
+        handleSubmit,
+        clearErrors,
+        setError,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        resolver: zodResolver(schema),
+    });
+
     const [showPassword, setShowPassword] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+
+    const onSubmit = handleSubmit(async (data) => {
+        const response = await fetch("api/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        const json = await response.json();
+        if (!response.ok) {
+            if (response.status === 409) {
+                setError("email", json);
+            }
+            toast.custom(
+                (t) => (
+                    <div
+                        className={`${
+                            t.visible
+                                ? "animate-custom-enter"
+                                : "animate-custom-leave"
+                        } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
+                    >
+                        <ErrorIcon />
+                        <div
+                            className="flex justify-center mx-2.5 my-1"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            {json.message}
+                        </div>
+                    </div>
+                ),
+                { position: "top-right" }
+            );
+            return;
+        }
+        if (isAuth(json)) {
+            authenticate(json);
+        }
+    });
+
     return (
         <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
             <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
@@ -74,7 +155,7 @@ export default function SignUpForm() {
                                 </span>
                             </div>
                         </div>
-                        <form>
+                        <form onSubmit={onSubmit}>
                             <div className="space-y-5">
                                 <div>
                                     <Label>
@@ -84,10 +165,10 @@ export default function SignUpForm() {
                                         </span>
                                     </Label>
                                     <Input
-                                        type="text"
-                                        id="name"
-                                        name="name"
+                                        {...register("name")}
                                         placeholder="Introduce tu nombre completo"
+                                        hint={errors.name?.message}
+                                        error={!!errors.name}
                                     />
                                 </div>
 
@@ -99,10 +180,10 @@ export default function SignUpForm() {
                                         </span>
                                     </Label>
                                     <Input
-                                        type="email"
-                                        id="email"
-                                        name="email"
+                                        {...register("email")}
                                         placeholder="Introduce tu correo electrónico"
+                                        hint={errors.email?.message}
+                                        error={!!errors.email}
                                     />
                                 </div>
 
@@ -115,18 +196,21 @@ export default function SignUpForm() {
                                     </Label>
                                     <div className="relative">
                                         <Input
+                                            {...register("password")}
                                             placeholder="Introduce tu contraseña"
                                             type={
                                                 showPassword
                                                     ? "text"
                                                     : "password"
                                             }
+                                            hint={errors.password?.message}
+                                            error={!!errors.password}
                                         />
                                         <span
                                             onClick={() =>
                                                 setShowPassword(!showPassword)
                                             }
-                                            className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                            className="absolute z-30 cursor-pointer right-4 top-3"
                                         >
                                             {showPassword ? (
                                                 <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
@@ -157,9 +241,19 @@ export default function SignUpForm() {
                                 </div>
 
                                 <div>
-                                    <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-brand-500 shadow-theme-xs hover:bg-brand-600">
+                                    <Button
+                                        className="w-full"
+                                        size="sm"
+                                        disabled={
+                                            !isChecked ||
+                                            isSubmitting ||
+                                            Object.values(errors).filter(
+                                                (error) => !!error
+                                            ).length > 0
+                                        }
+                                    >
                                         Registrarse
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         </form>

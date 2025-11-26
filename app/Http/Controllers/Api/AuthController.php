@@ -25,4 +25,27 @@ class AuthController extends Controller
             'user' => $user,
         ]);
     }
+
+    public function register(Request $request) {
+        $user = User::where("email", $request->email)->first();
+
+        if ($user) {
+            return response()->json([
+                "message" => "El correo electrónico ya está en uso"
+            ], 409);
+        }
+
+        $user = User::create([
+            "name" => $request->name,
+            "email" => $request->email,
+            "password" => Hash::make($request->password),
+        ]);
+
+        $token = $user->createToken("react-spa")->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'user' => $user,
+        ]);
+    }
 }
