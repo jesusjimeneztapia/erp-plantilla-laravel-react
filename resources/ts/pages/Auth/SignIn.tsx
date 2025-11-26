@@ -13,7 +13,7 @@ export default function SignIn() {
 
     return (
         <>
-            <PageMeta title="Inicio de Sesión | ERP Plantilla" />
+            <PageMeta title="Iniciar Sesión | ERP Plantilla" />
             <AuthLayout>
                 <SignInForm />
             </AuthLayout>

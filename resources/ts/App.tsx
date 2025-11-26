@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 export default function App() {
     return (
         <>
+            <Toaster />
             <Router>
                 <ScrollToTop />
                 <Routes>
@@ -19,15 +20,14 @@ export default function App() {
                         <Route index element={<Home />} />
                     </Route>
 
-                    <Route path="/signin" element={<SignIn />} />
-                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/iniciar-sesion" element={<SignIn />} />
+                    <Route path="/registrarse" element={<SignUp />} />
 
                     <Route path="/404" element={<NotFound />} />
 
                     <Route path="*" element={<Navigate to="/404" replace />} />
                 </Routes>
             </Router>
-            <Toaster />
         </>
     );
 }

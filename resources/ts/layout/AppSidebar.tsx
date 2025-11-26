@@ -26,37 +26,43 @@ type NavItem = {
 const navItems: NavItem[] = [
     {
         icon: <GridIcon />,
-        name: "Dashboard",
-        subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+        name: "Panel",
+        path: "/panel",
     },
     {
         icon: <CalenderIcon />,
-        name: "Calendar",
-        path: "/calendar",
+        name: "Calendario",
+        path: "/calendario",
     },
     {
         icon: <UserCircleIcon />,
-        name: "User Profile",
-        path: "/profile",
+        name: "Perfil de Usuario",
+        path: "/perfil",
     },
     {
-        name: "Forms",
+        name: "Fomularios",
         icon: <ListIcon />,
         subItems: [
-            { name: "Form Elements", path: "/form-elements", pro: false },
+            {
+                name: "Elementos de formulario",
+                path: "/elementos-formulario",
+                pro: false,
+            },
         ],
     },
     {
-        name: "Tables",
+        name: "Tablas",
         icon: <TableIcon />,
-        subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+        subItems: [
+            { name: "Tablas Básicas", path: "/tablas-basicas", pro: false },
+        ],
     },
     {
-        name: "Pages",
+        name: "Páginas",
         icon: <PageIcon />,
         subItems: [
-            { name: "Blank Page", path: "/blank", pro: false },
-            { name: "404 Error", path: "/404", pro: false },
+            { name: "Página en Blanco", path: "/pagina-blanco", pro: false },
+            { name: "Error 404", path: "/404", pro: false },
         ],
     },
 ];
@@ -64,21 +70,21 @@ const navItems: NavItem[] = [
 const othersItems: NavItem[] = [
     {
         icon: <PieChartIcon />,
-        name: "Charts",
+        name: "Gráficos",
         subItems: [
-            { name: "Line Chart", path: "/line-chart", pro: false },
-            { name: "Bar Chart", path: "/bar-chart", pro: false },
+            { name: "Gráfico de Líneas", path: "/grafico-lineas", pro: false },
+            { name: "Gráfico de Barras", path: "/grafico-barras", pro: false },
         ],
     },
     {
         icon: <BoxCubeIcon />,
-        name: "UI Elements",
+        name: "Elementos UI",
         subItems: [
-            { name: "Alerts", path: "/alerts", pro: false },
+            { name: "Alertas", path: "/alertas", pro: false },
             { name: "Avatar", path: "/avatars", pro: false },
             { name: "Badge", path: "/badge", pro: false },
-            { name: "Buttons", path: "/buttons", pro: false },
-            { name: "Images", path: "/images", pro: false },
+            { name: "Botones", path: "/botones", pro: false },
+            { name: "Imágenes", path: "/imagenes", pro: false },
             { name: "Videos", path: "/videos", pro: false },
         ],
     },
@@ -359,7 +365,7 @@ const AppSidebar: FC = () => {
                                 }`}
                             >
                                 {isExpanded || isHovered || isMobileOpen ? (
-                                    "Menu"
+                                    "Menú"
                                 ) : (
                                     <HorizontaLDots className="size-6" />
                                 )}
@@ -375,7 +381,7 @@ const AppSidebar: FC = () => {
                                 }`}
                             >
                                 {isExpanded || isHovered || isMobileOpen ? (
-                                    "Others"
+                                    "Otros"
                                 ) : (
                                     <HorizontaLDots />
                                 )}
