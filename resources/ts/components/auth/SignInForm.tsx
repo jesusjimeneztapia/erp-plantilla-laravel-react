@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Link } from "react-router";
 import { EyeCloseIcon, EyeIcon } from "@icons/index";
 import Label from "@components/form/Label";
@@ -6,9 +6,9 @@ import Input from "@components/form/input/InputField";
 import Checkbox from "@components/form/input/Checkbox";
 import Button from "@components/ui/button/Button";
 import z from "zod";
-import { useForm } from "react-hook-form";
+import { ChangeHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import toast, { ErrorIcon, CheckmarkIcon } from "react-hot-toast";
+import toast, { ErrorIcon } from "react-hot-toast";
 import { isAuth, useAuth } from "@context/AuthContext";
 
 const schema = z.object({
@@ -31,14 +31,24 @@ export default function SignInForm() {
     const {
         register,
         handleSubmit,
+        clearErrors,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(schema),
     });
 
     const [showPassword, setShowPassword] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
+
+    const emailField = register("email");
+    const passwordField = register("password");
+
+    const handleChange =
+        (onChange: ChangeHandler) => (e: ChangeEvent<HTMLInputElement>) => {
+            clearErrors("root");
+            onChange(e);
+        };
 
     const onSubmit = handleSubmit(async (data) => {
         const response = await fetch("api/login", {
@@ -52,8 +62,7 @@ export default function SignInForm() {
         const json = await response.json();
         if (!response.ok) {
             if (response.status === 401) {
-                setError("email", json);
-                setError("password", json);
+                setError("root", json);
             }
             toast.custom(
                 (t) => (
@@ -79,27 +88,6 @@ export default function SignInForm() {
             return;
         }
         if (isAuth(json)) {
-            toast.custom(
-                (t) => (
-                    <div
-                        className={`${
-                            t.visible
-                                ? "animate-custom-enter"
-                                : "animate-custom-leave"
-                        } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
-                    >
-                        <CheckmarkIcon />
-                        <div
-                            className="flex justify-center mx-2.5 my-1"
-                            role="status"
-                            aria-live="polite"
-                        >
-                            Inicio de sesión con éxito
-                        </div>
-                    </div>
-                ),
-                { position: "top-right" }
-            );
             authenticate(json);
         }
     });
@@ -180,10 +168,16 @@ export default function SignInForm() {
                                         </span>{" "}
                                     </Label>
                                     <Input
-                                        {...register("email")}
+                                        {...emailField}
+                                        onChange={handleChange(
+                                            emailField.onChange
+                                        )}
                                         placeholder="info@gmail.com"
-                                        hint={errors.email?.message}
-                                        error={!!errors.email}
+                                        hint={
+                                            errors.email?.message ||
+                                            errors.root?.message
+                                        }
+                                        error={!!errors.email || !!errors.root}
                                     />
                                 </div>
                                 <div>
@@ -195,15 +189,24 @@ export default function SignInForm() {
                                     </Label>
                                     <div className="relative">
                                         <Input
-                                            {...register("password")}
+                                            {...passwordField}
+                                            onChange={handleChange(
+                                                passwordField.onChange
+                                            )}
                                             type={
                                                 showPassword
                                                     ? "text"
                                                     : "password"
                                             }
                                             placeholder="info@gmail.com"
-                                            hint={errors.password?.message}
-                                            error={!!errors.password}
+                                            hint={
+                                                errors.password?.message ||
+                                                errors.root?.message
+                                            }
+                                            error={
+                                                !!errors.password ||
+                                                !!errors.root
+                                            }
                                         />
                                         <span
                                             onClick={() =>
@@ -237,7 +240,16 @@ export default function SignInForm() {
                                     </Link>
                                 </div>
                                 <div>
-                                    <Button className="w-full" size="sm">
+                                    <Button
+                                        className="w-full"
+                                        size="sm"
+                                        disabled={
+                                            isSubmitting ||
+                                            Object.values(errors).filter(
+                                                (error) => !!error
+                                            ).length > 0
+                                        }
+                                    >
                                         Iniciar sesión
                                     </Button>
                                 </div>
