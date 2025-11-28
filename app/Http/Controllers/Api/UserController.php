@@ -25,7 +25,7 @@ class UserController extends Controller
         $foundUser = User::with(["roles" => function ($q) {
             $q->select("name");
         }])->where("id", $userId)->first();
-        
+
         if (!$foundUser) {
             return response()->json(["message" => "El usuario no fue encontrado"], 404);
         }
@@ -63,8 +63,15 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy($userId)
     {
-        //
+        $foundUser = User::where("id", $userId)->first();
+
+        if (!$foundUser) {
+            return response()->json(["message" => "El usuario no fue encontrado"], 404);
+        }
+
+        $foundUser->delete();
+        return response()->noContent();
     }
 }

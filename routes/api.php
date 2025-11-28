@@ -25,3 +25,4 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::get("/users", [UserController::class, "index"]);
 Route::patch("/users/{id}/toggle-status", [UserController::class, "toggleStatus"]);
+Route::delete("/users/{id}", [UserController::class, "destroy"]);
