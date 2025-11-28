@@ -9,6 +9,7 @@ import {
 import Badge from "@components/ui/badge/Badge";
 import { useEffect, useState } from "react";
 import { PencilIcon, TrashBinIcon } from "@icons/index";
+import toast, { CheckmarkIcon } from "react-hot-toast";
 
 type UserStatus = "Activo" | "Inactivo";
 
@@ -32,15 +33,65 @@ function useUsers() {
             .then((users) => {
                 setUsers(users.data);
                 setIsLoading(false);
-                console.log({ users });
             });
     }, []);
 
-    return { users, isLoading };
+    const toggleStatus = async (userId: number) => {
+        const foundIndexUser = users.findIndex((user) => user.id === userId);
+        if (foundIndexUser >= 0) {
+            const foundUser = users[foundIndexUser];
+            foundUser.status =
+                foundUser.status === "Activo" ? "Inactivo" : "Activo";
+            const updatedUsers = [...users];
+            updatedUsers[foundIndexUser] = foundUser;
+            setUsers([...updatedUsers]);
+
+            fetch(`/api/users/${userId}/toggle-status`, { method: "PATCH" })
+                .then((response) => response.json())
+                .then((updatedUser) => {
+                    toast.custom(
+                        (t) => (
+                            <div
+                                className={`${
+                                    t.visible
+                                        ? "animate-custom-enter"
+                                        : "animate-custom-leave"
+                                } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
+                            >
+                                <CheckmarkIcon />
+                                <div
+                                    className="flex justify-center mx-2.5 my-1"
+                                    role="status"
+                                    aria-live="polite"
+                                >
+                                    Usuario actualizado con éxito
+                                </div>
+                            </div>
+                        ),
+                        { position: "bottom-right" }
+                    );
+                    users[foundIndexUser] = updatedUser;
+                    setUsers((users) => {
+                        const foundIndexUser = users.findIndex(
+                            (user) => user.id === userId
+                        );
+                        if (foundIndexUser >= 0) {
+                            users[foundIndexUser] = updatedUser;
+                        }
+                        return [...users];
+                    });
+                })
+                .catch(() => {
+                    setUsers([...users]);
+                });
+        }
+    };
+
+    return { users, isLoading, toggleStatus };
 }
 
 export default function UsersTable() {
-    const { users, isLoading } = useUsers();
+    const { users, isLoading, toggleStatus } = useUsers();
     return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
             <div className="max-w-full overflow-x-auto">
@@ -153,6 +204,7 @@ export default function UsersTable() {
                                                 ? "Deshabilitar"
                                                 : "Habilitar"
                                         } usuario`}
+                                        onClick={() => toggleStatus(user.id)}
                                     >
                                         <Badge
                                             size="sm"

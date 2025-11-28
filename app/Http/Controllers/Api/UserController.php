@@ -21,6 +21,21 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
+    public function toggleStatus($userId) {
+        $foundUser = User::with(["roles" => function ($q) {
+            $q->select("name");
+        }])->where("id", $userId)->first();
+        
+        if (!$foundUser) {
+            return response()->json(["message" => "El usuario no fue encontrado"], 404);
+        }
+
+        $currentStatus = $foundUser->status;
+        $foundUser->status = $currentStatus === "Activo" ? "Inactivo" : "Activo";
+        $foundUser->save();
+        return response()->json(UserResource::make($foundUser));
+    }
+
     /**
      * Store a newly created resource in storage.
      */
