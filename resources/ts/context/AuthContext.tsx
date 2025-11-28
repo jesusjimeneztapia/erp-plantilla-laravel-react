@@ -44,7 +44,9 @@ function parseAuth(raw: string | null): Auth | null {
 }
 
 export const AuthProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [auth, setAuth] = useState<Auth | null>(null);
+    const [auth, setAuth] = useState<Auth | null>(
+        parseAuth(localStorage.getItem("auth"))
+    );
     const [isInitialized, setIsInitialized] = useState(false);
 
     useEffect(() => {

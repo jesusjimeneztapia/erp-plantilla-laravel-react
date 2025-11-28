@@ -6,6 +6,7 @@ import Home from "@pages/Dashboard/Home";
 import SignIn from "@pages/Auth/SignIn";
 import SignUp from "@pages/Auth/SignUp";
 import { Toaster } from "react-hot-toast";
+import Users from "@pages/Users/Users";
 
 export default function App() {
     return (
@@ -18,6 +19,7 @@ export default function App() {
 
                     <Route path="/panel" element={<AppLayout />}>
                         <Route index element={<Home />} />
+                        <Route path="/panel/usuarios" element={<Users />} />
                     </Route>
 
                     <Route path="/iniciar-sesion" element={<SignIn />} />
