@@ -9,7 +9,7 @@ import {
 import Badge from "@components/ui/badge/Badge";
 import { useEffect, useState } from "react";
 import { PencilIcon, TrashBinIcon } from "@icons/index";
-import toast, { CheckmarkIcon } from "react-hot-toast";
+import toast, { CheckmarkIcon, ErrorIcon } from "react-hot-toast";
 
 type UserStatus = "Activo" | "Inactivo";
 
@@ -37,17 +37,29 @@ function useUsers() {
     }, []);
 
     const toggleStatus = async (userId: number) => {
+        const originalUsers = users.map((user) => ({ ...user }));
         const foundIndexUser = users.findIndex((user) => user.id === userId);
         if (foundIndexUser >= 0) {
-            const foundUser = users[foundIndexUser];
-            foundUser.status =
-                foundUser.status === "Activo" ? "Inactivo" : "Activo";
-            const updatedUsers = [...users];
-            updatedUsers[foundIndexUser] = foundUser;
-            setUsers([...updatedUsers]);
+            const updatedUser = {
+                ...users[foundIndexUser],
+                status:
+                    users[foundIndexUser].status === "Activo"
+                        ? "Inactivo"
+                        : ("Activo" as UserStatus),
+            };
+
+            setUsers((prev) => {
+                prev[foundIndexUser] = updatedUser;
+                return [...prev];
+            });
 
             fetch(`/api/users/${userId}/toggle-status`, { method: "PATCH" })
-                .then((response) => response.json())
+                .then((response) => {
+                    if (response.status !== 200) {
+                        throw Error("Ocurrió algún error, intente más tarde");
+                    }
+                    return response.json();
+                })
                 .then((updatedUser) => {
                     toast.custom(
                         (t) => (
@@ -70,19 +82,40 @@ function useUsers() {
                         ),
                         { position: "bottom-right" }
                     );
-                    users[foundIndexUser] = updatedUser;
-                    setUsers((users) => {
-                        const foundIndexUser = users.findIndex(
+
+                    setUsers((prev) => {
+                        const foundIndexUser = prev.findIndex(
                             (user) => user.id === userId
                         );
                         if (foundIndexUser >= 0) {
-                            users[foundIndexUser] = updatedUser;
+                            prev[foundIndexUser] = updatedUser;
                         }
-                        return [...users];
+                        return [...prev];
                     });
                 })
                 .catch(() => {
-                    setUsers([...users]);
+                    toast.custom(
+                        (t) => (
+                            <div
+                                className={`${
+                                    t.visible
+                                        ? "animate-custom-enter"
+                                        : "animate-custom-leave"
+                                } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
+                            >
+                                <ErrorIcon />
+                                <div
+                                    className="flex justify-center mx-2.5 my-1"
+                                    role="status"
+                                    aria-live="polite"
+                                >
+                                    Error al actualizar el usuario
+                                </div>
+                            </div>
+                        ),
+                        { position: "bottom-right" }
+                    );
+                    setUsers([...originalUsers]);
                 });
         }
     };
