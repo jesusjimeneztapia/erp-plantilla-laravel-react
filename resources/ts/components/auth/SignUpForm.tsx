@@ -9,7 +9,7 @@ import { isAuth, useAuth } from "@context/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@components/ui/button/Button";
-import toast, { ErrorIcon } from "react-hot-toast";
+import toast, { CheckmarkIcon, ErrorIcon } from "react-hot-toast";
 
 const schema = z.object({
     name: z.string().min(3, {
@@ -84,6 +84,27 @@ export default function SignUpForm() {
             return;
         }
         if (isAuth(json)) {
+            toast.custom(
+                (t) => (
+                    <div
+                        className={`${
+                            t.visible
+                                ? "animate-custom-enter"
+                                : "animate-custom-leave"
+                        } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
+                    >
+                        <CheckmarkIcon />
+                        <div
+                            className="flex justify-center mx-2.5 my-1"
+                            role="status"
+                            aria-live="polite"
+                        >
+                            Registro exitoso
+                        </div>
+                    </div>
+                ),
+                { position: "bottom-right" }
+            );
             authenticate(json);
         }
     });
