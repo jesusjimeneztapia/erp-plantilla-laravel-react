@@ -1,12 +1,12 @@
 import { Link, Navigate } from "react-router";
 import GridShape from "@components/common/GridShape";
 import PageMeta from "@components/common/PageMeta";
-import { useAuth } from "@context/AuthContext";
+import { useAuthStore } from "@store/auth";
 
 export default function NotFound() {
-    const { auth } = useAuth();
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-    if (!auth) {
+    if (!isAuthenticated) {
         return <Navigate to="/" replace />;
     }
 

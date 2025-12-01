@@ -1,8 +1,8 @@
 import type { FC } from "react";
-import { useTheme } from "@context/ThemeContext";
+import { useThemeStore } from "@store/theme";
 
 export const ThemeToggleButton: FC = () => {
-    const { toggleTheme } = useTheme();
+    const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
     return (
         <button

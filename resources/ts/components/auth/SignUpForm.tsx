@@ -5,11 +5,11 @@ import Label from "@components/form/Label";
 import Input from "@components/form/input/InputField";
 import Checkbox from "@components/form/input/Checkbox";
 import z from "zod";
-import { isAuth, useAuth } from "@context/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@components/ui/button/Button";
 import toast, { CheckmarkIcon, ErrorIcon } from "react-hot-toast";
+import { useAuthStore } from "@store/auth";
 
 const schema = z.object({
     name: z.string().min(3, {
@@ -33,7 +33,7 @@ const schema = z.object({
 });
 
 export default function SignUpForm() {
-    const { authenticate } = useAuth();
+    const authenticate = useAuthStore((state) => state.authenticate);
     const {
         register,
         handleSubmit,
@@ -83,30 +83,28 @@ export default function SignUpForm() {
             );
             return;
         }
-        if (isAuth(json)) {
-            toast.custom(
-                (t) => (
+        toast.custom(
+            (t) => (
+                <div
+                    className={`${
+                        t.visible
+                            ? "animate-custom-enter"
+                            : "animate-custom-leave"
+                    } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
+                >
+                    <CheckmarkIcon />
                     <div
-                        className={`${
-                            t.visible
-                                ? "animate-custom-enter"
-                                : "animate-custom-leave"
-                        } flex items-center bg-white text-gray-800 shadow-lg rounded-lg max-w-80 pointer-events-auto px-2.5 py-2 dark:bg-gray-900 dark:text-white`}
+                        className="flex justify-center mx-2.5 my-1"
+                        role="status"
+                        aria-live="polite"
                     >
-                        <CheckmarkIcon />
-                        <div
-                            className="flex justify-center mx-2.5 my-1"
-                            role="status"
-                            aria-live="polite"
-                        >
-                            Registro exitoso
-                        </div>
+                        Registro exitoso
                     </div>
-                ),
-                { position: "bottom-right" }
-            );
-            authenticate(json);
-        }
+                </div>
+            ),
+            { position: "bottom-right" }
+        );
+        authenticate(json.token, json.user);
     });
 
     return (

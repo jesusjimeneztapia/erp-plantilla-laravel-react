@@ -1,12 +1,12 @@
 import PageBreadcrumb from "@components/common/PageBreadCrumb";
 import PageMeta from "@components/common/PageMeta";
-import { useAuth } from "@context/AuthContext";
+import { useAuthStore } from "@store/auth";
 import { Navigate } from "react-router";
 
 export default function Home() {
-    const { auth } = useAuth();
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-    if (!auth) {
+    if (!isAuthenticated) {
         return <Navigate to="/" replace />;
     }
 

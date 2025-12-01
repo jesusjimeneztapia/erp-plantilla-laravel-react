@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { DropdownItem } from "@components/ui/dropdown/DropdownItem";
 import { Dropdown } from "@components/ui/dropdown/Dropdown";
-import { useAuth } from "@context/AuthContext";
+import { useAuthStore } from "@store/auth";
 
 export default function UserDropdown() {
-    const { auth, unauthenticate } = useAuth();
+    const user = useAuthStore((state) => state.user);
+    const unauthenticate = useAuthStore((state) => state.unauthenticate);
     const [isOpen, setIsOpen] = useState(false);
 
     function toggleDropdown() {
@@ -25,7 +26,7 @@ export default function UserDropdown() {
                 </span>
 
                 <span className="block mr-1 font-medium text-theme-sm">
-                    {auth?.user.name.split(" ")[0]}
+                    {user?.name.split(" ")[0]}
                 </span>
                 <svg
                     className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
@@ -54,10 +55,10 @@ export default function UserDropdown() {
             >
                 <div>
                     <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-                        {auth?.user.name}
+                        {user?.name}
                     </span>
                     <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-                        {auth?.user.email}
+                        {user?.email}
                     </span>
                 </div>
 

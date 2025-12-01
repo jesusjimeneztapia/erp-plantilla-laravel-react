@@ -2,13 +2,13 @@ import ComponentCard from "@components/common/ComponentCard";
 import PageBreadcrumb from "@components/common/PageBreadCrumb";
 import PageMeta from "@components/common/PageMeta";
 import UsersTable from "@components/tables/UsersTable/UsersTable";
-import { useAuth } from "@context/AuthContext";
+import { useAuthStore } from "@store/auth";
 import { Navigate } from "react-router";
 
 export default function Users() {
-    const { auth } = useAuth();
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-    if (!auth) {
+    if (!isAuthenticated) {
         return <Navigate to="/" replace />;
     }
 

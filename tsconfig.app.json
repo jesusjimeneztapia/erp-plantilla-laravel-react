@@ -30,6 +30,7 @@
             "@icons/*": ["icons/*"],
             "@layout/*": ["layout/*"],
             "@pages/*": ["pages/*"],
+            "@store/*": ["store/*"],
             "@css/*": ["../css/*"]
         }
     },

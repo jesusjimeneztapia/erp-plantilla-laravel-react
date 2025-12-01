@@ -1,7 +1,7 @@
-import { useTheme } from "@context/ThemeContext";
+import { useThemeStore } from "@store/theme";
 
 export default function ThemeTogglerTwo() {
-    const { toggleTheme } = useTheme();
+    const toggleTheme = useThemeStore((state) => state.toggleTheme);
     return (
         <button
             onClick={toggleTheme}
