@@ -7,7 +7,7 @@ export default function NotFound() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
     if (!isAuthenticated) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/iniciar-sesion" replace />;
     }
 
     return (
@@ -37,7 +37,7 @@ export default function NotFound() {
                     </p>
 
                     <Link
-                        to="/panel"
+                        to="/"
                         className="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-3.5 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/3 dark:hover:text-gray-200"
                     >
                         Volver a la Página de Inicio

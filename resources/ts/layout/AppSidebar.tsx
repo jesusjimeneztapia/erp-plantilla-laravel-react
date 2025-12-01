@@ -28,12 +28,12 @@ const navItems: NavItem[] = [
     {
         icon: <GridIcon />,
         name: "Panel",
-        path: "/panel",
+        path: "/",
     },
     {
         icon: <UsersIcon />,
         name: "Usuarios",
-        path: "/panel/usuarios",
+        path: "/usuarios",
     },
     {
         icon: <CalenderIcon />,

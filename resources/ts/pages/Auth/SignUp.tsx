@@ -8,7 +8,7 @@ export default function SignUp() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
     if (isAuthenticated) {
-        return <Navigate to="/panel" replace />;
+        return <Navigate to="/" replace />;
     }
 
     return (

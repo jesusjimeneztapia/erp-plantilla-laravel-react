@@ -15,11 +15,9 @@ export default function App() {
             <Router>
                 <ScrollToTop />
                 <Routes>
-                    <Route index element={<SignIn />} />
-
-                    <Route path="/panel" element={<AppLayout />}>
+                    <Route path="/" element={<AppLayout />}>
                         <Route index element={<Home />} />
-                        <Route path="/panel/usuarios" element={<Users />} />
+                        <Route path="/usuarios" element={<Users />} />
                     </Route>
 
                     <Route path="/iniciar-sesion" element={<SignIn />} />

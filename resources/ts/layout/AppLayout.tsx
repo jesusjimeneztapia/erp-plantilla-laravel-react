@@ -1,13 +1,19 @@
 import type { FC } from "react";
 
 import { SidebarProvider, useSidebar } from "@context/SidebarContext";
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import AppHeader from "./AppHeader";
 import Backdrop from "./Backdrop";
 import AppSidebar from "./AppSidebar";
+import { useAuthStore } from "@store/auth";
 
 const LayoutContent: FC = () => {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const { isExpanded, isHovered, isMobileOpen } = useSidebar();
+
+    if (!isAuthenticated) {
+        return <Navigate to="/iniciar-sesion" replace />;
+    }
 
     return (
         <div className="min-h-screen xl:flex">
